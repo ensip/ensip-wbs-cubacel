@@ -124,28 +124,15 @@ function getUserBalance($id){
 
 function checkProvider($amnt = 0) {
 	
-	$limit = 20;
-	$date = date ('Y-m-d H:i:s');
-	$date_limit = date ('2021-01-01 12:00:01');	
-	if ($date >= $date_limit) {
-		$limit = 22;
+	$db = Db::getInstance();
+	$sql = "select valor from runtime_control where clave='cuba_reseller_provider'";
+	$res = $db->ejecutar($sql);
+
+	if( $row = $db->obtener_obj($res) ){
+		$p = $row->valor;
 	}
+	syslog (LOG_INFO, __FILE__ . ':'.__METHOD__ . ':busco proveedor en bd:'.$p);
 	
-	//if (0 && ($amnt > $limit)) { //siempre que busque proveedor
-	if (0) { //siempre que busque proveedor dimecuba
-		$p = 'dimecuba';
-		syslog (LOG_INFO, __FILE__ . ':'.__METHOD__ . ':fuerzo proveedor por cantidad a :'.$p);
-	} else {
-	
-		$db = Db::getInstance();
-		$sql = "select valor from runtime_control where clave='cuba_reseller_provider'";
-		$res = $db->ejecutar($sql);
-	
-		if( $row = $db->obtener_obj($res) ){
-			$p = $row->valor;
-		}
-		syslog (LOG_INFO, __FILE__ . ':'.__METHOD__ . ':busco proveedor en bd:'.$p);
-	}
 	if ($p == 'csq') {
 	
 		include_once(DRIVER_WEB_CSQ);
